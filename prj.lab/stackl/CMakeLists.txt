@@ -1,0 +1,1 @@
+add_library(stackl stackl.h stackl.cpp)
