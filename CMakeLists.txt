@@ -1,10 +1,14 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.27)
 
 project(nyunin_n_a)
 
+set(CMAKE_CXX_STANDARD 20)
+
 include_directories(
+    prj.cw
     prj.lab
     prj.thirdparty
 )
 
+add_subdirectory(prj.cw)
 add_subdirectory(prj.lab)
