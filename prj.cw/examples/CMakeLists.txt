@@ -1,0 +1,3 @@
+add_executable(ranking_example ranking_example.cpp)
+
+target_link_libraries(ranking_example ranking)
