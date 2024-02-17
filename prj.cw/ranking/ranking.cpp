@@ -75,3 +75,67 @@ std::ostream& operator<<(std::ostream& ostrm, const Ranking& r) {
 std::istream& operator>>(std::istream& istrm, Ranking& r) {
     return r.read_from(istrm);
 }
+
+std::vector<std::set<std::string>> calculate_contradiction_kernel(const Ranking& r1, const Ranking& r2) {
+    if (r1.object_names() != r2.object_names())  // Если у ранжировок разные списки носителей
+        throw std::invalid_argument("The rankings have different sets of objects.");
+    else if (r1.object_count() == 0)  // Если ранжировки пусты
+        throw std::invalid_argument("The rankings are empty.");
+
+    const unsigned long long n = r1.object_count();  // Число носителей в ранжировках
+    const auto& y1 = r1.matrix();  // Матрица первой ранжировки
+    const auto& y2 = r2.matrix();  // Матрица второй ранжировки
+
+    // Вычисление Y_12 = Y_1 && Y_2
+    std::vector<std::vector<bool>> y12(n, std::vector<bool>(n, false));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            y12[i][j] = y1[i][j] && y2[i][j];
+    }
+
+    // Вычисление Y'_12 = (Y_12)^T
+    std::vector<std::vector<bool>> y12_t(n, std::vector<bool>(n, false));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            y12_t[i][j] = y12[j][i];
+    }
+
+    // Вычисление матрицы противоречий Y = Y_12 || Y'_12
+    std::vector<std::vector<bool>> y(n, std::vector<bool>(n, false));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            y[i][j] = y12[i][j] || y12_t[i][j];
+    }
+
+    // Вектор из имён носителей в ранжировках
+    const auto& k = r1.object_names();
+
+    // Вычисление ядра противоречий
+    std::vector<std::set<std::string>> kernel;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (!y[i][j]) {
+                if (kernel.empty())  // Если ядро противоречий пока пусто
+                    kernel.push_back(std::set<std::string>{k[i], k[j]});
+                else {
+                    bool found = false;  // Найден ли существующий кластер с нужным носителем
+                    for (auto& cluster : kernel) {
+                        if (cluster.contains(k[i])) {
+                            cluster.insert(k[j]);
+                            found = true;
+                            break;
+                        } else if (cluster.contains(k[j])) {
+                            cluster.insert(k[i]);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)  // Существующий кластер не найден
+                        kernel.push_back(std::set<std::string>{k[i], k[j]});
+                }
+            }
+        }
+    }
+
+    return kernel;
+}

@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -12,9 +13,11 @@
 class Ranking {
 public:
     Ranking() = default;  /**< Конструктор по умолчанию. */
-    Ranking(const Ranking&) = default;  /**< Конструктор копирования. */
-    Ranking& operator=(const Ranking&) = default;  /**< Оператор присваивания. */
+    Ranking(const Ranking& other) = default;  /**< Конструктор копирования. */
+    Ranking& operator=(const Ranking& other) = default;  /**< Оператор присваивания. */
     ~Ranking() = default;  /**< Деструктор. */
+    Ranking(Ranking&& other) = default;  /**< Конструктор перемещения. */
+    Ranking& operator=(Ranking&& other) = default;  /**< Оператор перемещения. */
 
     //! @brief Конструктор от JSON-строки.
     //! @param ranking_string - Строка формата JSON с описанием ранжировки.
@@ -58,5 +61,15 @@ private:
 
 std::ostream& operator<<(std::ostream& ostrm, const Ranking& r);
 std::istream& operator>>(std::istream& istrm, Ranking& r);
+
+//! @brief Функция для вычисления ядра противоречий.
+//!
+//! Ядром противоречий для ранжировок называется множество кластеров носителей, для которых возникли противоречия
+//! в ранжировках, и которые стали неразличимыми по степени выраженности рассматриваемых признаков.
+//! @param r1 - Первая ранжировка.
+//! @param r2 - Вторая ранжировка.
+//! @return Вектор, содержащий ядро противоречий для ранжировок `r1` и `r2`.
+//! @throw std::invalid_argument - Предоставленные ранжировки имеют различные списки носителей.
+std::vector<std::set<std::string>> calculate_contradiction_kernel(const Ranking& r1, const Ranking& r2);
 
 #endif  // RANKING_RANKING_H_08022024
