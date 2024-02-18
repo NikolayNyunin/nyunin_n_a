@@ -51,6 +51,9 @@ int main() {
     }
     std::cout << '\n' << std::endl;
 
+    const Ranking combined = calculate_combined_ranking(r1, r2);
+    std::cout << "Combined ranking: " << combined << '\n' << std::endl;
+
     // Передача пустой строки в конструктор
     try {
         Ranking r3("");

@@ -4,7 +4,6 @@
 #include <nlohmann/json.hpp>
 
 #include <map>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -21,7 +20,13 @@ public:
 
     //! @brief Конструктор от JSON-строки.
     //! @param ranking_string - Строка формата JSON с описанием ранжировки.
+    //! @throw std::invalid_argument - Неправильный формат строки.
     explicit Ranking(const std::string& ranking_string);
+
+    //! @brief Конструктор от вектора.
+    //! @param ranking_vector - Вектор с описанием ранжировки.
+    //! @throw std::invalid_argument - Неправильный формат вектора.
+    explicit Ranking(const std::vector<std::vector<std::string>>& ranking_vector);
 
     //! @brief Метод для получения числа носителей в ранжировке.
     //! @return Число носителей в ранжировке.
@@ -70,6 +75,26 @@ std::istream& operator>>(std::istream& istrm, Ranking& r);
 //! @param r2 - Вторая ранжировка.
 //! @return Вектор, содержащий ядро противоречий для ранжировок `r1` и `r2`.
 //! @throw std::invalid_argument - Предоставленные ранжировки имеют различные списки носителей.
-std::vector<std::set<std::string>> calculate_contradiction_kernel(const Ranking& r1, const Ranking& r2);
+std::vector<std::vector<std::string>> calculate_contradiction_kernel(const Ranking& r1, const Ranking& r2);
+
+//! @brief Вспомогательная функция для сравнения значений двух ключей в двух словарях.
+//! @param key1 - Первый ключ.
+//! @param key2 - Второй ключ.
+//! @param map1 - Первый словарь.
+//! @param map2 - Второй словарь.
+//! @return -1, 0 или 1 в зависимости от результата сравнения.
+int compare_keys(const std::string& key1, const std::string& key2,
+                 const std::map<std::string, long double>& map1,
+                 const std::map<std::string, long double>& map2) noexcept;
+
+//! @brief Функция для вычисления согласованной ранжировки.
+//!
+//! Согласованной ранжировкой для заданных ранжировок называется такая ранжировка,
+//! в которой носители упорядочены с учётом сразу всех рассматриваемых признаков.
+//! @param r1 - Первая ранжировка.
+//! @param r2 - Вторая ранжировка.
+//! @return Согласованная ранжировка - экземпляр класса Ranking.
+//! @throw std::invalid_argument - Предоставленные ранжировки имеют различные списки носителей.
+Ranking calculate_combined_ranking(const Ranking& r1, const Ranking& r2);
 
 #endif  // RANKING_RANKING_H_08022024
