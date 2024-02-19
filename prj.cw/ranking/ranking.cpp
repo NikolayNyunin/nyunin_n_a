@@ -236,6 +236,10 @@ Ranking calculate_combined_ranking(const Ranking& r1, const Ranking& r2) {
 
     // Добавление остальных носителей в согласованную ранжировку
     for (const auto& key1 : keys) {
+        if (combined_ranking.empty()) {
+            combined_ranking.push_back(std::vector<std::string>{key1});
+            continue;
+        }
         for (int i = 0; i < combined_ranking.size(); i++) {
             const auto& key2 = combined_ranking[i][0];
 

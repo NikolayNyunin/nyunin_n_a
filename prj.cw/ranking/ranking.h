@@ -44,6 +44,16 @@ public:
     //! @return Вектор (std::vector) вида {`имя_носителя_1`, `имя_носителя_2`, ...}.
     [[nodiscard]] std::vector<std::string> object_names() const noexcept { return k_; }
 
+    //! @brief Оператор сравнения.
+    //! @param other - Другая ранжировка.
+    //! @return `true` если ранжировки эквивалентны, иначе - `false`.
+    bool operator==(const Ranking& other) const noexcept { return w_ == other.w_; }
+
+    //! @brief Оператор сравнения.
+    //! @param other - Другая ранжировка.
+    //! @return `true` если ранжировки не эквивалентны, иначе - `false`.
+    bool operator!=(const Ranking& other) const noexcept { return !operator==(other); }
+
     //! @brief Метод для записи ранжировки в поток.
     //! @param ostrm - Поток вывода.
     std::ostream& write_to(std::ostream& ostrm) const;
