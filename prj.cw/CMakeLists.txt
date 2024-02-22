@@ -1,2 +1,3 @@
 add_subdirectory(ranking)
 add_subdirectory(examples)
+add_subdirectory(doctests)

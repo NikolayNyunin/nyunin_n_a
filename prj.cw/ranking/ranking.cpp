@@ -48,6 +48,8 @@ std::istream& Ranking::read_from(std::istream &istrm) {
 
     if (!j_.is_array())  // Полученный на вход JSON-объект не является массивом
         throw std::invalid_argument("The input stream does not contain a JSON array.");
+    else if (j_.empty())  // Массив пустой
+        throw std::invalid_argument("The input stream contains an empty array.");
 
     // Заполнение словаря весов носителей в ранжировке
     w_.clear();
@@ -60,10 +62,14 @@ std::istream& Ranking::read_from(std::istream &istrm) {
             for (const auto& child_value : value) {
                 if (!child_value.is_string())  // Если элемент в массиве не является строкой
                     throw std::invalid_argument("The JSON array element is not a string.");
+                else if (w_.contains(child_value))  // Если носитель уже есть в словаре
+                    throw std::invalid_argument("The same object name is encountered twice.");
                 w_[child_value] = cluster_weight;  // Запись веса носителя
             }
             weight += value.size();  // Увеличение переменной веса носителя
         } else if (value.is_string()) {  // Если элемент является отдельным носителем
+            if (w_.contains(value))  // Если носитель уже есть в словаре
+                throw std::invalid_argument("The same object name is encountered twice.");
             w_[value] = weight;  // Запись веса носителя
             weight++;  // Увеличение переменной веса носителя
         } else {

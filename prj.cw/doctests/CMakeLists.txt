@@ -1,0 +1,3 @@
+add_executable(doctest_ranking doctest_ranking.cpp)
+
+target_link_libraries(doctest_ranking ranking)
