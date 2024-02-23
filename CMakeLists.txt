@@ -12,3 +12,8 @@ include_directories(
 
 add_subdirectory(prj.cw)
 add_subdirectory(prj.lab)
+
+install(
+    TARGETS ranking_example doctest_ranking RUNTIME
+    DESTINATION bin
+)
