@@ -17,3 +17,8 @@ install(
     TARGETS ranking_example doctest_ranking RUNTIME
     DESTINATION bin
 )
+
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/prj.cw/data/
+    DESTINATION data
+)
