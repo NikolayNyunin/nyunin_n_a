@@ -1,0 +1,5 @@
+.idea
+
+cmake-build
+cmake-install
+prj.cw/doxygen-docs

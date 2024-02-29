@@ -22,3 +22,17 @@ install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/prj.cw/data/
     DESTINATION data
 )
+
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+    doxygen_add_docs(
+        docs ALL
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/prj.cw/
+        CONFIG_FILE ${CMAKE_SOURCE_DIR}/prj.cw/Doxyfile
+    )
+    install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/prj.cw/doxygen-docs/
+        DESTINATION docs
+    )
+endif()
